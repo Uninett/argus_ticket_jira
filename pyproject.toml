@@ -1,0 +1,38 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "argus_ticket_jira"
+authors = [{name = "Johanna England", email = "johanna.england@sikt.no"}]
+readme = "README.rst"
+maintainers = [{name = "Johanna England", email = "johanna.england@sikt.no"}]
+dependencies = [
+    "argus-server>=1.9",
+    "jira",
+]
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Django",
+    "Framework :: Django :: 3.2",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: System :: Monitoring",
+]
+dynamic = ["version", "description"]
+
+[project.optional-dependencies]
+test = [
+    "tox",
+    "coverage",
+]
+
+[project.urls]
+Home = "https://github.com/Uninett/argus_ticket_jira"
+Source = "https://github.com/Uninett/argus_ticket_jira"
