@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "argus_ticket_jira"
 authors = [{name = "Johanna England", email = "johanna.england@sikt.no"}]
-readme = "README.rst"
+readme = "README.md"
 maintainers = [{name = "Johanna England", email = "johanna.england@sikt.no"}]
 dependencies = [
     "argus-server>=1.9",
