@@ -5,7 +5,13 @@ import logging
 from jira import JIRA
 from markdownify import markdownify
 
-from argus.incident.ticket.base import TicketPlugin, TicketPluginException
+from argus.incident.ticket.base import (
+    TicketClientException,
+    TicketCreationException,
+    TicketPlugin,
+    TicketPluginException,
+    TicketSettingsException,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -21,25 +27,19 @@ class JiraPlugin(TicketPlugin):
     def import_settings(cls):
         try:
             endpoint, authentication, ticket_information = super().import_settings()
-        except ValueError as e:
-            LOG.exception("Could not import settings for ticket plugin.")
-            raise TicketPluginException(f"Jira: {e}")
+        except TicketSettingsException as e:
+            LOG.exception(e)
+            raise TicketSettingsException(f"Jira: {e}")
 
         if "token" not in authentication.keys():
-            LOG.error(
-                "Jira: No token can be found in the authentication information. Please update the setting 'TICKET_AUTHENTICATION_SECRET'."
-            )
-            raise TicketPluginException(
-                "Jira: No token can be found in the authentication information. Please update the setting 'TICKET_AUTHENTICATION_SECRET'."
-            )
+            authentication_error = "Jira: No token can be found in the authentication information. Please update the setting 'TICKET_AUTHENTICATION_SECRET'."
+            LOG.error(authentication_error)
+            raise TicketSettingsException(authentication_error)
 
         if "project_key_or_id" not in ticket_information.keys():
-            LOG.error(
-                "Jira: No project key or id can be found in the ticket information. Please update the setting 'TICKET_INFORMATION'."
-            )
-            raise TicketPluginException(
-                "Jira: No project key or id can be found in the ticket information. Please update the setting 'TICKET_INFORMATION'."
-            )
+            project_key_id_error = "Jira: No project key or id can be found in the ticket information. Please update the setting 'TICKET_INFORMATION'."
+            LOG.error(project_key_id_error)
+            raise TicketSettingsException(project_key_id_error)
 
         return endpoint, authentication, ticket_information
 
@@ -94,8 +94,9 @@ class JiraPlugin(TicketPlugin):
                     token_auth=authentication["token"],
                 )
         except Exception as e:
-            LOG.exception("Jira: Client could not be created.")
-            raise TicketPluginException(f"Jira: {e}")
+            client_error = "Jira: Client could not be created."
+            LOG.exception(client_error)
+            raise TicketClientException(client_error)
         else:
             return client
 
@@ -136,7 +137,8 @@ class JiraPlugin(TicketPlugin):
         try:
             ticket = client.create_issue(fields=fields)
         except Exception as e:
-            LOG.exception("Jira: Ticket could not be created.")
-            raise TicketPluginException(f"Jira: {e}")
+            ticket_error = "Jira: Ticket could not be created."
+            LOG.exception(ticket_error)
+            raise TicketPluginException(f"{ticket_error} {e}")
         else:
             return ticket.permalink()
