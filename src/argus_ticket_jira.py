@@ -1,9 +1,9 @@
 "Allow argus-server to create tickets in Jira"
 
 import logging
-from urllib.parse import urljoin
 
 from jira import JIRA
+from markdownify import markdownify
 
 from argus.incident.ticket.base import TicketPlugin, TicketPluginException
 
@@ -42,6 +42,38 @@ class JiraPlugin(TicketPlugin):
             )
 
         return endpoint, authentication, ticket_information
+
+    @staticmethod
+    def convert_tags_to_dict(tag_dict: dict) -> dict:
+        incident_tags_list = [entry["tag"].split("=") for entry in tag_dict]
+        return {key: value for key, value in incident_tags_list}
+
+    @staticmethod
+    def get_custom_fields(
+        ticket_information: dict, serialized_incident: dict, map: dict
+    ) -> dict:
+        incident_tags = JiraPlugin.convert_tags_to_dict(serialized_incident["tags"])
+        custom_fields = {}
+        if "custom_fields_set" in ticket_information.keys():
+            for key, value in ticket_information["custom_fields_set"].items():
+                field_id = map.get(key, None)
+                if field_id:
+                    custom_fields[field_id] = value
+
+        custom_fields_mapping = ticket_information.get("custom_fields_mapping", {})
+        for key, value in custom_fields_mapping.items():
+            field_id = map.get(key, None)
+            if field_id:
+                if type(value) is dict:
+                    # Information can be found in tags
+                    custom_fields[field_id] = incident_tags[value["tag"]]
+                else:
+                    # Infinity means that the incident is still open
+                    if serialized_incident[value] == "infinity":
+                        continue
+                    custom_fields[field_id] = serialized_incident[value]
+
+        return custom_fields
 
     @staticmethod
     def create_client(endpoint, authentication):
@@ -83,13 +115,26 @@ class JiraPlugin(TicketPlugin):
             else "Task"
         )
 
+        html_body = cls.create_html_body(serialized_incident=serialized_incident)
+        markdown_body = markdownify(html=html_body)
+
+        custom_fields_map = {field["name"]: field["id"] for field in client.fields()}
+        custom_fields = cls.get_custom_fields(
+            ticket_information=ticket_information,
+            serialized_incident=serialized_incident,
+            map=custom_fields_map,
+        )
+
+        fields = {
+            "project": ticket_information["project_key_or_id"],
+            "summary": serialized_incident["description"],
+            "description": markdown_body,
+            "issuetype": ticket_type,
+        }
+        fields.update(custom_fields)
+
         try:
-            ticket = client.create_issue(
-                project=ticket_information["project_key_or_id"],
-                summary=serialized_incident["description"],
-                description=str(serialized_incident),
-                issuetype=ticket_type,
-            )
+            ticket = client.create_issue(fields=fields)
         except Exception as e:
             LOG.exception("Jira: Ticket could not be created.")
             raise TicketPluginException(f"Jira: {e}")
