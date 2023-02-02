@@ -35,4 +35,4 @@ test = [
 
 [project.urls]
 Home = "https://github.com/Uninett/argus_ticket_jira"
-Source = "https://github.com/Uninett/argus_ticket_jira"
+Issues = "https://github.com/Uninett/argus_ticket_jira/issues"
