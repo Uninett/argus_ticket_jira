@@ -1,2 +1,0 @@
-argus-server>=1.10.0
-jira
