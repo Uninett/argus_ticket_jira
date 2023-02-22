@@ -16,7 +16,7 @@ from argus.incident.ticket.base import (
 LOG = logging.getLogger(__name__)
 
 
-__version__ = "1.0"
+__version__ = "1.0.1"
 __all__ = [
     "JiraPlugin",
 ]
@@ -55,23 +55,27 @@ class JiraPlugin(TicketPlugin):
         incident_tags = JiraPlugin.convert_tags_to_dict(serialized_incident["tags"])
         custom_fields = {}
         if "custom_fields_set" in ticket_information.keys():
-            for key, value in ticket_information["custom_fields_set"].items():
+            for key, field in ticket_information["custom_fields_set"].items():
                 field_id = map.get(key, None)
                 if field_id:
-                    custom_fields[field_id] = value
+                    custom_fields[field_id] = field
 
         custom_fields_mapping = ticket_information.get("custom_fields_mapping", {})
-        for key, value in custom_fields_mapping.items():
+        for key, field in custom_fields_mapping.items():
             field_id = map.get(key, None)
             if field_id:
-                if type(value) is dict:
+                if type(field) is dict:
                     # Information can be found in tags
-                    custom_fields[field_id] = incident_tags[value["tag"]]
+                    custom_field = incident_tags.get(field["tag"], None)
+                    if custom_field:
+                        custom_fields[field_id] = custom_field
                 else:
-                    # Infinity means that the incident is still open
-                    if serialized_incident[value] == "infinity":
-                        continue
-                    custom_fields[field_id] = serialized_incident[value]
+                    custom_field = serialized_incident.get(field, None)
+                    if custom_field:
+                        # Infinity means that the incident is still open
+                        if custom_field == "infinity":
+                            continue
+                        custom_fields[field_id] = custom_field
 
         return custom_fields
 
