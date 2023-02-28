@@ -1,6 +1,7 @@
 "Allow argus-server to create tickets in Jira"
 
 import logging
+from typing import List
 
 from jira import JIRA
 from markdownify import markdownify
@@ -16,7 +17,7 @@ from argus.incident.ticket.base import (
 LOG = logging.getLogger(__name__)
 
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __all__ = [
     "JiraPlugin",
 ]
@@ -48,10 +49,9 @@ class JiraPlugin(TicketPlugin):
         incident_tags_list = [entry["tag"].split("=") for entry in tag_dict]
         return {key: value for key, value in incident_tags_list}
 
-    @staticmethod
     def get_custom_fields(
         ticket_information: dict, serialized_incident: dict, map: dict
-    ) -> dict:
+    ) -> tuple[dict, List[str]]:
         incident_tags = JiraPlugin.convert_tags_to_dict(serialized_incident["tags"])
         custom_fields = {}
         if "custom_fields_set" in ticket_information.keys():
@@ -60,6 +60,7 @@ class JiraPlugin(TicketPlugin):
                 if field_id:
                     custom_fields[field_id] = field
 
+        missing_fields = []
         custom_fields_mapping = ticket_information.get("custom_fields_mapping", {})
         for key, field in custom_fields_mapping.items():
             field_id = map.get(key, None)
@@ -69,6 +70,8 @@ class JiraPlugin(TicketPlugin):
                     custom_field = incident_tags.get(field["tag"], None)
                     if custom_field:
                         custom_fields[field_id] = custom_field
+                    else:
+                        missing_fields.append(field["tag"])
                 else:
                     custom_field = serialized_incident.get(field, None)
                     if custom_field:
@@ -76,8 +79,10 @@ class JiraPlugin(TicketPlugin):
                         if custom_field == "infinity":
                             continue
                         custom_fields[field_id] = custom_field
+                    else:
+                        missing_fields.append(field)
 
-        return custom_fields
+        return custom_fields, missing_fields
 
     @staticmethod
     def create_client(endpoint, authentication):
@@ -120,15 +125,20 @@ class JiraPlugin(TicketPlugin):
             else "Task"
         )
 
-        html_body = cls.create_html_body(serialized_incident=serialized_incident)
-        markdown_body = markdownify(html=html_body)
-
         custom_fields_map = {field["name"]: field["id"] for field in client.fields()}
-        custom_fields = cls.get_custom_fields(
+        custom_fields, missing_fields = cls.get_custom_fields(
             ticket_information=ticket_information,
             serialized_incident=serialized_incident,
             map=custom_fields_map,
         )
+
+        html_body = cls.create_html_body(
+            serialized_incident={
+                "__missing_fields__": missing_fields,
+                **serialized_incident,
+            }
+        )
+        markdown_body = markdownify(html=html_body)
 
         fields = {
             "project": ticket_information["project_key_or_id"],
