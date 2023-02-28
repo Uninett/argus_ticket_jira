@@ -4,6 +4,7 @@ This is a plugin to create tickets in Jira from [Argus](https://github.com/Unine
 
 ## Settings
 
+* `TICKET_PLUGIN`: `"argus_ticket_jira.JiraPlugin"` if installed via pip
 * `TICKET_ENDPOINT`: `"https://jira.atlassian.net"` or link to self-hosted instance, absolute URL
 * `TICKET_AUTHENTICATION_SECRET`: Create an [API token](https://id.atlassian.com/manage-profile/security/api-tokens)
 
