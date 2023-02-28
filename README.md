@@ -94,3 +94,19 @@ This is a plugin to create tickets in Jira from [Argus](https://github.com/Unine
 
         }
         ```
+
+## Code style
+
+argus_ticket_jira uses black as a source code formatter. Black can be installed
+by running
+
+```console
+$ pip install black
+```
+
+A pre-commit hook will format new code automatically before committing.
+To enable this pre-commit hook, run
+
+```console
+$ pre-commit install
+```

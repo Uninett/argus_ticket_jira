@@ -9,7 +9,6 @@ USE_TZ = True
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
-
     # Must make tables
     "rest_framework.authtoken",
     "argus.auth",
