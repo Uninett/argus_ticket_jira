@@ -134,7 +134,7 @@ class JiraPlugin(TicketPlugin):
 
         html_body = cls.create_html_body(
             serialized_incident={
-                "__missing_fields__": missing_fields,
+                "missing_fields": missing_fields,
                 **serialized_incident,
             }
         )
