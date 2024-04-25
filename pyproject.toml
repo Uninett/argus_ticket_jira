@@ -8,22 +8,22 @@ authors = [{name = "Johanna England", email = "johanna.england@sikt.no"}]
 readme = "README.md"
 maintainers = [{name = "Johanna England", email = "johanna.england@sikt.no"}]
 dependencies = [
-    "argus-server>=1.11",
+    "argus-server>=1.15",
     "jira>=3.4.1",
     "markdownify>=0.11",
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
-    "Development Status :: 4 - Beta",
     "Framework :: Django",
-    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.2",
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: System :: Monitoring",
 ]
 dynamic = ["version", "description"]
