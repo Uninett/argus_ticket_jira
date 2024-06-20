@@ -49,8 +49,9 @@ class JiraPlugin(TicketPlugin):
         incident_tags_list = [entry["tag"].split("=") for entry in tag_dict]
         return {key: value for key, value in incident_tags_list}
 
+    @classmethod
     def get_custom_fields(
-        ticket_information: dict, serialized_incident: dict, map: dict
+        cls, ticket_information: dict, serialized_incident: dict, map: dict
     ) -> tuple[dict, List[str]]:
         incident_tags = JiraPlugin.convert_tags_to_dict(serialized_incident["tags"])
         custom_fields = {}
