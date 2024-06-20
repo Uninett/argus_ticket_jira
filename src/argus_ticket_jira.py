@@ -66,7 +66,7 @@ class JiraPlugin(TicketPlugin):
         for key, field in custom_fields_mapping.items():
             field_id = map.get(key, None)
             if field_id:
-                if type(field) is dict:
+                if isinstance(field, dict):
                     # Information can be found in tags
                     custom_field = incident_tags.get(field["tag"], None)
                     if custom_field:
