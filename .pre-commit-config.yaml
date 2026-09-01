@@ -1,18 +1,19 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
+    rev: v6.0.0
     hooks:
     -   id: trailing-whitespace
     -   id: mixed-line-ending
     -   id: end-of-file-fixer
     -   id: debug-statements
--   repo: https://github.com/pycqa/flake8
-    rev: 3.9.2
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.5
     hooks:
-    -   id: flake8
-        name: "Flake8: critical"
-        args: ['--count', '--select=E9,F63,F7,F82', '--show-source', '--statistics']
--   repo: https://github.com/psf/black
-    rev: 23.1.0
-    hooks:
-    -   id: black
+        # Run the linter
+    -   id: ruff
+        name: "Ruff linting"
+        files: ^(src|tests)/
+        # Run the formatter
+    -   id: ruff-format
+        name: "Ruff formatting"
+        files: ^(src|tests)/
