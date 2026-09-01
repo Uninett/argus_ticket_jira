@@ -60,13 +60,13 @@ django-filter==26.1
     # via argus-server
 django-htmx==1.29.0
     # via argus-server
-django-phonenumber-field==8.5.0
+django-phonenumber-field[phonenumberslite]==8.5.0
     # via argus-server
 django-psycopg-infinity==0.1.0
     # via argus-server
 django-rest-knox==5.1.0
     # via argus-server
-django-stubs-ext==6.1.0
+django-stubs-ext==6.0.9
     # via django-tasks-db
 django-tasks==0.12.0
     # via django-tasks-db
@@ -157,7 +157,7 @@ requests-oauthlib==2.0.0
     #   social-auth-core
 requests-toolbelt==1.0.0
     # via jira
-rpds-py==2026.6.3
+rpds-py==0.30.0
     # via
     #   jsonschema
     #   referencing

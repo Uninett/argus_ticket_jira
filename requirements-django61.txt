@@ -60,13 +60,13 @@ django-filter==26.1
     # via argus-server
 django-htmx==1.29.0
     # via argus-server
-django-phonenumber-field==8.5.0
+django-phonenumber-field[phonenumberslite]==8.5.0
     # via argus-server
 django-psycopg-infinity==0.1.0
     # via argus-server
 django-rest-knox==5.1.0
     # via argus-server
-django-stubs-ext==6.1.0
+django-stubs-ext==6.0.9
     # via django-tasks-db
 django-tasks==0.12.0
     # via django-tasks-db
@@ -121,11 +121,11 @@ packaging==26.3
     #   wheel
 phonenumberslite==9.0.38
     # via django-phonenumber-field
-psycopg==3.3.5
+psycopg[c]==3.3.4
     # via
     #   argus-server
     #   django-psycopg-infinity
-psycopg-c==3.3.5
+psycopg-c==3.3.4
     # via psycopg
 pycparser==3.0
     # via cffi
