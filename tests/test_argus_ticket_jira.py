@@ -1,6 +1,6 @@
+from argus.incident.ticket.base import TicketPluginException
 from django.test import SimpleTestCase, override_settings
 
-from argus.incident.ticket.base import TicketPluginException
 from argus_ticket_jira import JiraPlugin
 
 

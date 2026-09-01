@@ -3,16 +3,14 @@
 import logging
 from typing import List
 
-from jira import JIRA
-from markdownify import markdownify
-
 from argus.incident.ticket.base import (
     TicketClientException,
-    TicketCreationException,
     TicketPlugin,
     TicketPluginException,
     TicketSettingsException,
 )
+from jira import JIRA
+from markdownify import markdownify
 
 LOG = logging.getLogger(__name__)
 
@@ -103,7 +101,7 @@ class JiraPlugin(TicketPlugin):
                     server=endpoint,
                     token_auth=authentication["token"],
                 )
-        except Exception as e:
+        except Exception:
             client_error = "Jira: Client could not be created."
             LOG.exception(client_error)
             raise TicketClientException(client_error)
