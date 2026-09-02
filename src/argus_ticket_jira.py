@@ -160,6 +160,6 @@ class JiraPlugin(TicketPlugin):
     @staticmethod
     def get_ticket_identifier(incident: Incident) -> str:
         try:
-            return incident.ticket_url.rsplit("/browse/", maxsplit=1)[1]
+            return incident.ticket_url.rsplit("/browse/", maxsplit=1)[1].strip("/")
         except Exception:
             return incident.ticket_url
