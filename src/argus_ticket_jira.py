@@ -3,6 +3,7 @@
 import logging
 from typing import List
 
+from argus.incident.models import Incident
 from argus.incident.ticket.base import (
     TicketClientException,
     TicketPlugin,
@@ -155,3 +156,10 @@ class JiraPlugin(TicketPlugin):
             raise TicketPluginException(f"{ticket_error} {e}")
         else:
             return ticket.permalink()
+
+    @staticmethod
+    def get_ticket_identifier(incident: Incident) -> str:
+        try:
+            return incident.ticket_url.rsplit("/browse/", maxsplit=1)[1].strip("/")
+        except Exception:
+            return incident.ticket_url

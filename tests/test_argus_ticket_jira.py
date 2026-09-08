@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 from argus.incident.ticket.base import TicketPluginException
 from django.test import SimpleTestCase, override_settings
 
@@ -30,3 +32,25 @@ class JiraTicketPluginTests(SimpleTestCase):
 
         with self.assertRaises(TicketPluginException):
             jira_plugin.import_settings()
+
+
+class GetTicketIdentifierTests(SimpleTestCase):
+    def test_get_ticket_identifier_returns_ticket_id_for_valid_url(
+        self,
+    ):
+        ticket_url = "https://jira.atlassian.net/browse/AT-25"
+        jira_plugin = JiraPlugin()
+        incident = Mock(ticket_url=ticket_url)
+
+        ticket_identifier = jira_plugin.get_ticket_identifier(incident=incident)
+        self.assertEqual(ticket_identifier, "AT-25")
+
+    def test_get_ticket_identifier_returns_ticket_url_for_url_not_following_format(
+        self,
+    ):
+        ticket_url = "https://example.com/AT-25"
+        jira_plugin = JiraPlugin()
+        incident = Mock(ticket_url=ticket_url)
+
+        ticket_identifier = jira_plugin.get_ticket_identifier(incident=incident)
+        self.assertEqual(ticket_identifier, ticket_url)
