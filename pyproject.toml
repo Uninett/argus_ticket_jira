@@ -8,9 +8,11 @@ authors = [{name = "Johanna England", email = "johanna.england@sikt.no"}]
 readme = "README.md"
 maintainers = [{name = "Johanna England", email = "johanna.england@sikt.no"}]
 dependencies = [
-    "argus-server>=2.10.0",
+    "argus-server>=2.10.1",
     "jira>=3.4.1",
     "markdownify>=0.11",
+    "certifi>=2026.10.19",
+    "pip>=26.2.2",
 ]
 requires-python = ">=3.10"
 classifiers = [
